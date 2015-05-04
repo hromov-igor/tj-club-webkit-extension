@@ -1,0 +1,36 @@
+{
+    "name": "tj-club-webkit-extension",
+    "description": "Браузерное расширение для Клуба TJ",
+    "version": "0.1",
+    "manifest_version": 2,
+    "minimum_chrome_version": "25",
+    "browser_action": {
+         "default_icon": {
+            "19": "img/ext_icons/19.png",
+            "38": "img/ext_icons/38.png"
+        },
+        "default_popup": "popup.html"
+    },
+    "icons": {
+        "16": "img/ext_icons/16.png",
+        "48": "img/ext_icons/48.png",
+        "128": "img/ext_icons/128.png"
+    },
+    "permissions": [
+        "tabs",
+        "http://*/*",
+        "webNavigation",
+        "history",
+        "storage"
+    ],
+    "content_scripts": [{
+        "matches": ["http://*/*", "https://*/*"],
+        "js": ["js/content_script.js"],
+        "css": ["css/content_script.css"]
+        
+    }],
+    "background": {
+        "scripts": ["js/storage.js", "js/background.js"],
+        "persistent": false
+    }
+}
