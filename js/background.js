@@ -47,56 +47,47 @@ chrome.runtime.onInstalled.addListener(function (details) {
     }
 });
 
+chrome.browserAction.setBadgeText({text:'x'});
+
 chrome.runtime.onUpdateAvailable.addListener(function (details) {
     // when an update is available - reload extension
     // update will be install immediately
     chrome.runtime.reload();
 });
 
+// wait for page load 
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse){
+        if (request.msg === 'loaded'){
+            console.log(sender)
+            //remove 'disabled' badge 
+            chrome.browserAction.setBadgeText({text:'', tabId:sender.tab.id});
 
-//Extension button onClick listener
-chrome.browserAction.onClicked.addListener(function(tab){
-    // find meta tags
-    // call content_script
-    chrome.tabs.getSelected(null,function(tab){
-        console.log(tab);
-        if (tab.status == 'complete'){
-            chrome.tabs.sendMessage(tab.id,{msg: 'getNewsData'}, function (response) {
-                if (chrome.runtime.lastError){
-                    console.log('Error' + chrome.runtime.lastError.message);
-                }
-                console.log(response.t);
-                if (response.t !== '') title = response.t;
-                else title = tab.title;
+            //Extension button onClick listener
+            chrome.browserAction.onClicked.addListener(function(tab){
 
-                // redirect to news page
-                var tjNewPage = 'http://tjournal.ru/club/new'+'?title='+title+'&url='+encodeURIComponent(tab.url);
-                chrome.tabs.create({url:tjNewPage},function(tab){
-                    //modify requested news page
+                // call content_script
+                chrome.tabs.getSelected(null,function(tab){
+                    console.log(tab);
+                    
+                    chrome.tabs.sendMessage(tab.id,{msg: 'getNewsData'}, function (response) {
+                        if (chrome.runtime.lastError){
+                            console.log('Error' + chrome.runtime.lastError.message);
+                        }
+                        console.log(response.t);
+                        if (response.t !== '') title = response.t;
+                        else title = tab.title;
 
+                        // redirect to news page
+                        var tjNewPage = 'http://tjournal.ru/club/new'+'?title='+title+'&url='+encodeURIComponent(tab.url);
+                        chrome.tabs.create({url:tjNewPage},function(tab){
+                        //modify requested news page
 
+                        });
+                    });    
                 });
             });
-        } 
-    });
-});
-
-
-
-// Receiving message from a content-script
-/*
- chrome.extension.onMessage.addListener(function (request, sender, sendResponse) {
-    if (request.msg === "I'm content-script") {
-        sendResponse({answer: "OK! I'm background_page"});
+            sendResponse({msg:"load recieved"});
+        }
     }
- });
- */
-
-// Sending a request to a content script. You need to specify which tab to send it to. Like this:
-/*
- chrome.tabs.getSelected(null, function (tab) {
- chrome.tabs.sendMessage(tab.id, {msg: "Do you hear me?"}, function (response) {
- console.log(response);
- });
- });
- */
+);

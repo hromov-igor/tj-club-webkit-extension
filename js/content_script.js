@@ -5,6 +5,13 @@ chrome.extension.sendMessage({msg: "I'm content-script"}, function (response) {
 });
 */
 
+window.onload = function(){
+	console.log('loaded');
+	chrome.runtime.sendMessage({msg:'loaded'},function(response){
+		console.log('load response recieved');
+	})
+}
+
 // Receiving message from a background page
 chrome.runtime.onMessage.addListener(
 	function (request, sender, sendResponse){
