@@ -53,27 +53,33 @@ chrome.runtime.onUpdateAvailable.addListener(function (details) {
     chrome.runtime.reload();
 });
 
+
 //Extension button onClick listener
 chrome.browserAction.onClicked.addListener(function(tab){
     // find meta tags
     // call content_script
     chrome.tabs.getSelected(null,function(tab){
-        console.log(tab.id);
-        chrome.tabs.sendMessage(tab.id,{msg: 'getNewsData'}, function (response) {
-        if (chrome.runtime.lastError){
-            alert('Error' + chrome.runtime.lastError.message);
-        }
-        console.log(response.t);
+        console.log(tab);
+        if (tab.status=='complete'){
+            chrome.tabs.sendMessage(tab.id,{msg: 'getNewsData'}, function (response) {
+            if (chrome.runtime.lastError){
+                console.log('Error' + chrome.runtime.lastError.message);
+            }
+            console.log(response.t);
+            if (response.t) title = response.t;
+            else title = tab.title;
 
-        // redirect to news page
-        var tjNewPage = 'http://tjournal.ru/club/new'+'?title='+response.t+'&url='+tab.url;
-        chrome.tabs.create({url:tjNewPage});
+            // redirect to news page
+            var tjNewPage = 'http://tjournal.ru/club/new'+'?title='+response.t+'&url='+tab.url;
+            chrome.tabs.create({url:tjNewPage});
+        }  
     });
     })
     
     
 
-})
+});
+
 
 
 // Receiving message from a content-script
