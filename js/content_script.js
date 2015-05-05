@@ -7,12 +7,18 @@ chrome.extension.sendMessage({msg: "I'm content-script"}, function (response) {
 
 
 // Receiving message from a background page
-/*
-chrome.extension.onMessage.addListener(
+
+chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
-        if (request.greeting === "Do you hear me?") {
+    	sendResponse({m: 'NoNo'});
+
+    	
+    	/*
+    	alert(1)
+
+        if (request.msg === "Do you hear me?") {
             sendResponse({answer: "Yes"});
         }
+        */
     }
 );
-*/

@@ -3,6 +3,7 @@
 chrome.runtime.onInstalled.addListener(function (details) {
 
     // good place to set default options
+    /*
     function setDefaults(callback) {
         storage.area.get(function (stored_options) {
             var default_options = storage.default_options,
@@ -27,6 +28,7 @@ chrome.runtime.onInstalled.addListener(function (details) {
             }
         });
     }
+    */
 
     switch (details.reason) {
     case 'install': // if ext is  first installed
@@ -36,7 +38,7 @@ chrome.runtime.onInstalled.addListener(function (details) {
         });
         break;
     case 'update':
-        setDefaults();
+        //setDefaults();
         break;
     default:
         break;
@@ -49,13 +51,35 @@ chrome.runtime.onUpdateAvailable.addListener(function (details) {
     chrome.runtime.reload();
 });
 
+//Extension button onClick listener
+chrome.browserAction.onClicked.addListener(function(tab){
+    // find meta tags
+    // call content_script
+    chrome.tabs.getSelected(null,function(tab){
+        console.log(tab)
+        chrome.tabs.sendMessage(tab.id,{msg: 'getNewsData'}, function (response) {
+        if (chrome.runtime.lastError){
+            alert('Error' + chrome.runtime.lastError.message)
+        }
+        alert(response);
+
+        // redirect to news page
+        //var tjNewPage = 'http://tjournal.ru/club/new'+'?title='+response.t+'&url='+tab.url;
+        //chrome.tabs.create({url:tjNewPage});
+    });
+    })
+    
+    
+
+})
+
 
 // Receiving message from a content-script
 /*
  chrome.extension.onMessage.addListener(function (request, sender, sendResponse) {
- if (request.msg === "I'm content-script") {
- sendResponse({answer: "OK! I'm background_page"});
- }
+    if (request.msg === "I'm content-script") {
+        sendResponse({answer: "OK! I'm background_page"});
+    }
  });
  */
 
