@@ -62,22 +62,19 @@ chrome.browserAction.onClicked.addListener(function(tab){
         console.log(tab);
         if (tab.status=='complete'){
             chrome.tabs.sendMessage(tab.id,{msg: 'getNewsData'}, function (response) {
-            if (chrome.runtime.lastError){
-                console.log('Error' + chrome.runtime.lastError.message);
-            }
-            console.log(response.t);
-            if (response.t) title = response.t;
-            else title = tab.title;
+                if (chrome.runtime.lastError){
+                    alert('Error' + chrome.runtime.lastError.message);
+                }
+                console.log(response.t);
+                if (response.t) title = response.t;
+                else title = tab.title;
 
-            // redirect to news page
-            var tjNewPage = 'http://tjournal.ru/club/new'+'?title='+response.t+'&url='+tab.url;
-            chrome.tabs.create({url:tjNewPage});
-        }  
+                // redirect to news page
+                var tjNewPage = 'http://tjournal.ru/club/new'+'?title='+response.t+'&url='+tab.url;
+                chrome.tabs.create({url:tjNewPage});
+            });
+        } 
     });
-    })
-    
-    
-
 });
 
 
