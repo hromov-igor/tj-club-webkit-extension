@@ -5,20 +5,22 @@ chrome.extension.sendMessage({msg: "I'm content-script"}, function (response) {
 });
 */
 
-
 // Receiving message from a background page
 chrome.runtime.onMessage.addListener(
 	function (request, sender, sendResponse){
 		console.log(request);
 		if (request.msg === 'getNewsData'){
+			tjTitle = '';
 			var metaTags = document.getElementsByTagName('meta');
 			for (var i=0;i<metaTags.length;i++){
 				if (metaTags[i].getAttribute('property') === 'og:title'){
-					title = metaTags[i].getAttribute('content'); 
+					tjTitle = metaTags[i].getAttribute('content');
+					break;
 				}
+
 			}
-			console.log(title);
-			sendResponse({t:title});
+			console.log(tjTitle);
+			sendResponse({t:tjTitle});
 		}
 	}
 );
